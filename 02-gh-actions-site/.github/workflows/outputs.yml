@@ -1,0 +1,8 @@
+# name: Output Information
+# on: worfkflow_dispatch
+# jobs:
+#   info:
+#     runs-on: ubuntu-latest
+#     steps: # context; search github context for more info
+#       - name: Output GH Context
+#         run: echo "${{ toJson(github)}}"

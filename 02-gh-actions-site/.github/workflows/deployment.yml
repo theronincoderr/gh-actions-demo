@@ -1,0 +1,38 @@
+name: Deploy Project 
+# trigger events
+on: [push, workflow_dispatch] # note 3. 
+jobs:
+  test: # job # 1
+    runs-on: ubuntu-latest
+    steps:
+        - name: Get code # dl code from repo
+          uses: actions/checkout@v3
+        - name: Install nodeJS
+          uses: actions/setup-node@v3
+          with: 
+            node-version: '18'
+        - name: Install dependencies
+          run: npm ci
+        - name: Run tests
+          run: npm test
+  # second job for deployment below
+  deploy: # jobs need to be sequential and indentation matters
+    # IMPORTANT: every job gets its own runner
+    # its own VM that's totally isolated from other machines and jobs 
+    # Both jobs will run in parallel unless specified otherwise
+    # to run sequentially, use 'needs' keyword
+    needs: test # deploy job will wait for test job to finish ; uncomment to enable
+    runs-on: ubuntu-latest
+    steps:
+        - name: Get code # dl code from repo
+          uses: actions/checkout@v3
+        - name: Install nodeJS
+          uses: actions/setup-node@v3
+          with: 
+            node-version: '18'
+        - name: Install dependencies
+          run: npm ci
+        - name: Build Project 
+          run:  npm run build
+        - name: Deploy
+          run: echo "Deploying project..."
